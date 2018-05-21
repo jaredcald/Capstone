@@ -1,72 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Edit Customer</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="stylesheets/proposalviews.css" type="text/css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <title>Creation Center</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="stylesheets/proposalviews.css" type="text/css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 
 <?php
-include "menu.php";
+  include "menu.php";
 ?>
 
-<SCRIPT LANGUAGE="JavaScript">
-    function addDashes(f)
+<!-- Menu Up-->
+<!-- Data-->
+
+
+<!--<SCRIPT LANGUAGE="JavaScript">
+ function addDashes(f)
     {
-        f_val = f.value.replace(/\D[^\.]/g, "");
-        f.value = f_val.slice(0,3)+"-"+f_val.slice(3,6)+"-"+f_val.slice(6);
+       f_val = f.value.replace(/\D[^\.]/g, "");
+       f.value = f_val.slice(0,3)+"-"+f_val.slice(3,6)+"-"+f_val.slice(6);
     }
 </SCRIPT>
+!-->
 
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script>
-    $(function () {
-
-        $('#phonenumber').keydown(function (e) {
-            var key = e.charCode || e.keyCode || 0;
-            $text = $(this);
-            if (key !== 8 && key !== 9) {
-                if ($text.val().length === 3) {
-                    $text.val($text.val() + '-');
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+          
+            $('#phonenumber').keydown(function (e) {
+                var key = e.charCode || e.keyCode || 0;
+                $text = $(this);
+                if (key !== 8 && key !== 9) {
+                    if ($text.val().length === 3) {
+                        $text.val($text.val() + '-');
+                    }
+                    if ($text.val().length === 7) {
+                        $text.val($text.val() + '-');
+                    }
                 }
-                if ($text.val().length === 7) {
-                    $text.val($text.val() + '-');
-                }
-            }
-            return (key == 8 || key == 9 || key == 46 || (key >= 48 && key <= 57) || (key >= 96 && key <= 105));
-        })
+                return (key == 8 || key == 9 || key == 46 || (key >= 48 && key <= 57) || (key >= 96 && key <= 105));
+            })
 
-    });
-</script>
-
+        });
+    </script>
 <?php
+  
+  $firstname = $lastname = $street = $city = $state = $zip = $email = $phone = $date = "";
+  $errorB = $errorC = $errorD = $errorE = $errorF = $errorG = $errorH = $errorI = $errorJ = "";
+  $message = "";
 
-$firstname = $lastname = $street = $city = $state = $zip = $email = $phone = $date = "";
-$message = "";
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      if(empty($_POST["firstname"]) || !preg_match("/^[a-zA-Z ]*$/",$_POST["firstname"])) {
+          $errorB = "<div style=\"color:red;\">Missing First Name*</div>";
+      }
+      else {
+          $firstname = $_POST["firstname"];
+      }
 
-    $path = "states.txt";
-    $state = fopen($path, 'r');
-    $data = fread($state, filesize($path));
-    fclose($state);
-    $lines =  explode(PHP_EOL,$data);
+      if(empty($_POST["lastname"]) || !preg_match("/^[a-zA-Z ]*$/",$_POST["lastname"])) {
+          $errorC = "<div style=\"color:red;\">Missing Last Name*</div>";
+      }
+      else {
+          $lastname = $_POST["lastname"];
+      }
 
-    $id = $_POST['edit'];
+      if (empty($_POST["street"])) {
+          $errorD = "<div style=\"color:red;\">Missing Street Address*</div>";
+      }
+      else {
+          $street = $_POST["street"];
+      }
 
-    $id = preg_replace("#[^0-9a-z]#i", "", $id);
+      if (empty($_POST["city"])) {
+          $errorE = "<div style=\"color:red;\">Missing City*</div>";
+      }
+      else {
+          $city = $_POST["city"];
+      }
 
+      if (empty($_POST["state"])) {
+          $errorF = "<div style=\"color:red;\">Missing State*</div>";
+      }
+      else {
+          $state = $_POST["state"];
+      }
 
+      if (empty($_POST["zip"])|| strlen($_POST["zip"]) < 5) {
+          $errorG = "<div style=\"color:red;\">Missing Zip*</div>";
+      }
+      else {
+          $zip = $_POST["zip"];
+      }
+
+      if (!check_email_address($_POST["email"])) {
+          $errorH = "<div style=\"color:red;\">Missing Email*</div>";
+      }
+      else {
+          $email = $_POST["email"];
+      }
+
+      if (!preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST["phonenumber"])){
+          $errorI = "<div style=\"color:red;\">Missing Phone Number*</div>";
+      }
+      else {
+          $phone = $_POST["phonenumber"];
+      }
+
+      if (empty($_POST["date"])) {
+          $errorJ = "<div style=\"color:red;\">Missing Date*</div>";
+      }
+      else {
+          $date = $_POST["date"];
+      }
+  
+
+  if(!empty($_POST["firstname"]) && !empty($_POST["lastname"]) && !empty($_POST["street"]) && !empty($_POST["city"]) && !empty($_POST["zip"]) && !empty($_POST["email"]) && !empty($_POST["phonenumber"]) && !empty($_POST["date"])) {
+        
     $servername = "helios.vse.gmu.edu";
-    $username = "jcaldwe4";
-    $password = "psitow";
-    $dbName = "jcaldwe4";
+    $username = "eorella4";
+    $password = "ydoogh";
+    $dbName = "eorella4";
 
     $conn = new mysqli($servername, $username, $password, $dbName);
 
@@ -74,206 +133,168 @@ $message = "";
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql_select = "SELECT * FROM Customer WHERE cust_id LIKE '%$id%'";
-    $select_query = mysqli_query($conn, $sql_select);
-    $row = mysqli_fetch_assoc($select_query);
+    $sql = "INSERT INTO Customer(cust_fname, cust_lname, cust_address, cust_city, cust_state, cust_zip, cust_email, cust_phone, cust_date)
+        VALUES ('$firstname', '$lastname', '$street', '$city', '$state', '$zip', '$email', '$phone', '$date')";
 
-
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["Edit"])) {
-        if (empty($_POST["fname"]) || !preg_match("/^[a-zA-Z ]*$/",$_POST["fname"])) {
-            $message = "Error! Invalid input.";
-        }
-        else {
-            $FirstName = $_POST["fname"];
-        }
-
-        if (empty($_POST["lname"]) || !preg_match("/^[a-zA-Z ]*$/",$_POST["lname"]))  {
-            $message = "Error! Invalid input.";
-        }
-        else {
-            $LastName = $_POST["lname"];
-        }
-
-        if (empty($_POST["street"])) {
-            $message = "Error! Invalid input.";
-        }
-        else {
-            $Street = $_POST["street"];
-        }
-
-        if (empty($_POST["city"])) {
-            $message = "Error! Invalid input.";
-        }
-        else {
-            $City = $_POST["city"];
-        }
-
-        if (empty($_POST["state"])) {
-            $message = "Error! Invalid input.";
-        }
-        else {
-            $State = $_POST["state"];
-        }
-
-        if (empty($_POST["zip"])|| strlen($_POST["zip"]) < 5) {
-            $message = "Error! Invalid input.";
-        }
-        else {
-            $Zip = $_POST["zip"];
-        }
-
-        if (!check_email_address($_POST["email"])) {
-            $message = "Error! Invalid input.";
-        }
-        else {
-            $Email = $_POST["email"];
-        }
-
-        if(!preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST["phone"])) {
-            $errorI = "Error! Invalid input.";
-        }
-        else {
-            $Phone = $_POST["phone"];
-        }
-
-        if (empty($_POST["date"])) {
-            $message = "Error! Invalid input.";
-        }
-        else {
-            $Date = $_POST["date"];
-        }
+    if ($conn->query($sql) === TRUE) {
+        $message = "Customer Added successfully.";
+    } else {
+        $message = "Error: " . $sql . "<br>" . $conn->error;
     }
 
+    $conn->close();
+  }
 }
 
 ?>
+
+
+
 <div class="container-fluid">
-    <br><br>
-    <h3><i>Edit Customer</i></h3>
-    <hr>
+<br><br>
+<h3><i>Add Customer</i></h3>
+<hr>
 
-    <div class="customInput">
-        <div class="container">
-            <form method="post" action="updatelog.php">
+<?php
+  echo "<div style=\"color:green;\"><i>$message</i></div>";
+?>
 
-                <div class="row">
-                    <div class="col-25">
-                        <label for="date">Date</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="date" name="date" value = "<?php echo htmlspecialchars($row['cust_date']); ?>"> <?php echo $message;?>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-25">
-                        <label>Name</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="firstname" name="firstname" placeholder="First Name"  value = "<?php echo htmlspecialchars($row['cust_fname']); ?>"><?php echo $message;?>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-25">
-                        <div class="spacer"></div>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="lastname" name="lastname" placeholder="Last Name" value ="<?php echo htmlspecialchars($row['cust_lname']); ?>"><?php echo $message;?>
-                    </div>
-                </div>
-
-                <div class="spacer"></div>
-
-
-                <div class="row">
-                    <div class="col-25">
-                        <label for="email">Email</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="email" id="email" name="email" placeholder="Email" value = "<?php echo htmlspecialchars($row['cust_email']); ?>"><?php echo $message;?>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-25">
-                        <label for="phone">Phone Number</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="phonenumber" name="phonenumber" placeholder="Phone Number" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" maxlength="12"  value = "<?php echo htmlspecialchars($row['cust_phone']); ?>">
-                        <br><i>(Format: 703-123-4477)</i><?php echo $message;?>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-25">
-                        <label for="address">Address</label>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="address" name="street" placeholder="Street Address" value = "<?php echo htmlspecialchars($row['cust_address']); ?>"><?php echo $message;?>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-25">
-                        <div class="spacer"></div>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="city" name="city" placeholder="City" value = "<?php echo htmlspecialchars($row['cust_city']); ?>"><?php echo $message;?>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-25">
-                        <div class="spacer"></div>
-                    </div>
-                    <div class="col-75">
-                        <select class="classic" name="state"><?php echo $message;?>
-                            <?php
-                            echo   "<option value=".$row["cust_state"].">".$row["cust_state"]."</option>";
-                            foreach($lines as $line) {
-                                if($line != $row["cust_state"]) {
-                                    echo '<option value="'. urlencode($line).'">'.$line.'</option>';
-                                }
-                            }
-                            ?>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-25">
-                        <div class="spacer"></div>
-                    </div>
-                    <div class="col-75">
-                        <input type="text" id="zip" name="zip" placeholder="Zip" value = "<?php echo htmlspecialchars($row['cust_zip']); ?>"><?php echo $message;?>
-                    </div>
-                </div>
-
-                <div class="spacer"></div>
-
-                <br>
-
-                <div class="row">
-                    <table>
-                        <tr>
-                            <th style="float:left;border-bottom:none;">
-                                <button class="btn btn-primary" type="submit" name="update" >Update</button>
-                                <input type="hidden" name="passer" value="<?php echo $id;?>" >
-                    </form></th>
-
-                            <th style="float:right;border-bottom:none;">
-                                <form method="post" action="deleteResults.php">
-                                    <button class="btn btn-primary" type="submit" name="delete">Delete</button>
-                                    <input type="hidden" name="delete" value="<?php echo $id;?>" >
-                                </form>
-                            </th>
-                        </tr>
-                    </table>
-                </div>
+<div class="customInput">
+<div class="container">
+  
+  <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    
+    <div class="row">
+      <div class="col-25">
+        <label for="date">Date</label>
+      </div>
+      <div class="col-75">
+        <input type="date" name="date"> <?php echo $errorJ;?>
+      </div>
     </div>
+    
+    <div class="row">
+      <div class="col-25">
+        <label>Name</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="firstname" name="firstname" placeholder="First Name"><?php echo $errorB;?>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-25">
+        <div class="spacer"></div>
+      </div>
+      <div class="col-75">
+        <input type="text" id="lastname" name="lastname" placeholder="Last Name"><?php echo $errorC;?>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+
+    <div class="row">
+      <div class="col-25">
+        <label for="email">Email</label>
+      </div>
+      <div class="col-75">
+        <input type="email" id="email" name="email" placeholder="Email"><?php echo $errorH;?>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="phone">Phone Number</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="phonenumber" name="phonenumber" placeholder="Phone Number" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"  onblur='addDashes(this)' maxlength="12">
+        <br><i>(Format: 703-123-4477)</i><?php echo $errorI;?>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="address">Address</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="address" name="street" placeholder="Street Address"><?php echo $errorD;?>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <div class="spacer"></div>
+      </div>
+      <div class="col-75">
+        <input type="text" id="city" name="city" placeholder="City"><?php echo $errorE;?>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-25">
+        <div class="spacer"></div>
+      </div>
+      <div class="col-75">
+        <select class="classic" name="state"><?php echo $errorF;?>
+          <?php
+                  
+            if ($file = fopen("states.txt", "r") or die("Unable to open file!")) 
+            {
+              while(!feof($file)) 
+              {
+                $line = fgets($file);
+                echo "<option name=\"$line\" value=\"$line\">$line</option>";
+              }
+              fclose($file);
+            }
+          ?>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <div class="spacer"></div>
+      </div>
+      <div class="col-75">
+        <input type="text" id="zip" name="zip" placeholder="Zip"><?php echo $errorG;?>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    
+    <!--
+    <div class="row">
+      <div class="col-25">
+        <label for="subject">Note</label>
+      </div>
+      <div class="col-75">
+        <textarea id="subject" name="subject" placeholder="Notes About Your Customer" style="height:100px"></textarea>
+      </div>
+    </div>
+    -->
+
+    <br>
+
+    <div class="row">
+      <table>
+        <tr>
+          <th style="float:left;border-bottom:none;">
+            <button class="btn btn-primary" input type="submit" name="update">Update</button>
+            </form>
+          </th>
+          <th style="float:right;border-bottom:none;">
+            <form method="post" action="customer.php">
+            <button class="btn btn-primary" type="submit" name="delete">Delete</button>
+            </form>
+        </th>
+    </tr>
+    </table>
+    </div>
+  
+
+</div>
 </div>
 
 
@@ -282,43 +303,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php
 
+
 function check_email_address($email) {
 
-    if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) {
-
+  if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) {
+    
+    return false;
+  }
+    
+  $email_array = explode("@", $email);
+  $local_array = explode(".", $email_array[0]);
+  
+  for ($i = 0; $i < sizeof($local_array); $i++) {
+      if(!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&
+  ↪'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$",
+  $local_array[$i])) {
         return false;
+      }
     }
-
-    $email_array = explode("@", $email);
-    $local_array = explode(".", $email_array[0]);
-    for ($i = 0; $i < sizeof($local_array); $i++) {
-        if
-        (!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&
-↪'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$",
-            $local_array[$i])) {
-            return false;
-        }
-    }
-
+    
     if (!ereg("^\[?[0-9\.]+\]?$", $email_array[1])) {
-        $domain_array = explode(".", $email_array[1]);
-        if (sizeof($domain_array) < 2) {
-            return false;
+      $domain_array = explode(".", $email_array[1]);
+      if (sizeof($domain_array) < 2) {
+          return false; 
+      }
+      for ($i = 0; $i < sizeof($domain_array); $i++) {
+        if
+  (!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|
+  ↪([A-Za-z0-9]+))$",
+  $domain_array[$i])) {
+          return false;
         }
-        for ($i = 0; $i < sizeof($domain_array); $i++) {
-            if
-            (!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|
-↪([A-Za-z0-9]+))$",
-                $domain_array[$i])) {
-                return false;
-            }
-        }
+      }
     }
     return true;
 }
 ?>
-<br />
-<br />
 
 
 

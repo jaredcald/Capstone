@@ -1,8 +1,8 @@
   	<?php
             $servername = "helios.vse.gmu.edu";
-            $username = "jcaldwe4";
-            $password = "psitow";
-            $dbName = "jcaldwe4";
+            $username = "eorella4";
+            $password = "ydoogh";
+            $dbName = "eorella4";
 
             $conn = new mysqli($servername, $username, $password, $dbName);
 
@@ -20,6 +20,7 @@
     
         
         <?php  
+            $output = "";
         	
         	// collect
         	if(isset($_POST['search'])){
@@ -38,17 +39,16 @@
         			else{
                         $output = "<br><br><br><br>";
         				while($row = mysqli_fetch_array($query)){
+        					$id = $row['cust_id']; 
+                            $fname = $row['cust_fname'];
+        					$lname = $row['cust_lname'];
+                            $email = $row['cust_email'];
         					
-                            echo "<tr><td>" . $row["cust_fname"].
-                              "<td>" . $row["cust_lname"]. "</td><td>" . $row["cust_email"] . "</td><td>" . 
-                              "<form method=\"post\" action=\"proposals.php\">
-                                <input type=\"submit\" name=\"submit\" value=\"Show\" />
-                                <input type=\"hidden\" name=\"search\" value=".$row["cust_id"]."/>
-                                </form>". "</td></tr>"; 
-    
+        			
+        					$output .= '<div>'.$fname .' '.$lname . ' ' . $email .'</div>';
         				}
         			}
         		}
         	}
-
+        	echo "$output";
         ?>

@@ -1,11 +1,9 @@
 <?php
 
-	include "details.php";
+	// include "Objects.php";
 
-	$tester = new Details("Hello", 350);
-	echo "<hr>" . $tester->getDescription();
-
-	//require('class.php');
+	// $tester = new Details("Hello", 350);
+	// echo "<hr>" . $tester->getDescription();
 
 ?>
 
@@ -58,14 +56,4 @@
 	$total2 = totalPrice($array2); 
 
 	echo "<br>Second test: $total2";
-
-	echo "<h3>Doubly Linked List</h3>";
-	$dlist = new SplDoublyLinkedList();
-	$dlist->add(0, new Details("Painting", 700.00));
-	$dlist->add(1, new Details("Drywall", 400.00));
-	$dlist->add(2, new Details("Deck", 600.00));
-
-	foreach ($dlist as $value) {
-        echo sprintf("%s\n", $value->getDescription() . " - " . $value->getPrice() . "<br>");
-    }
 ?>

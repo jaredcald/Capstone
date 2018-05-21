@@ -123,9 +123,9 @@
   if(!empty($_POST["firstname"]) && !empty($_POST["lastname"]) && !empty($_POST["street"]) && !empty($_POST["city"]) && !empty($_POST["zip"]) && !empty($_POST["email"]) && !empty($_POST["phonenumber"]) && !empty($_POST["date"])) {
         
     $servername = "helios.vse.gmu.edu";
-    $username = "jcaldwe4";
-    $password = "psitow";
-    $dbName = "jcaldwe4";
+    $username = "eorella4";
+    $password = "ydoogh";
+    $dbName = "eorella4";
 
     $conn = new mysqli($servername, $username, $password, $dbName);
 

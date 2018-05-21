@@ -66,18 +66,18 @@
   
   if(isset($_Post['search'])){
     $searchq = preg_replace("#[^0-9a-z]#i","",$searchq);
-    $sql .= "WHERE cust_fname LIKE '%$searchq%' OR cust_lname LIKE '%$searchq%'";
+    $sql = "SELECT * FROM Customer WHERE cust_fname LIKE '%$searchq%' OR cust_lname LIKE '%$searchq%'";
     $query = mysqli_query($conn, $sql);
     $count = mysqli_num_rows($query);
     if($searchq == ""){
-      $echo = "No Search Entered";
+      $output = "<br><br><br><br>No Search Entered";
     }
     else{
       if($count == 0){
-        echo "No Results";
+        $output = "<br><br><br><br>No Results";
       }
       else{
-
+        $output = "<br><br><br><br>";
         while($row = mysqli_fetch_array($query)){
             echo "<tr><td>" . $row["cust_fname"].
             "<td>" . $row["cust_lname"]. "</td><td>" . $row["cust_email"] . "</td><td>" . 
